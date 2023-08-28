@@ -1,9 +1,5 @@
 package jm.task.core.jdbc.dao;
-
-import com.mysql.cj.util.Util;
 import jm.task.core.jdbc.model.User;
-
-import java.net.ConnectException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,60 +12,91 @@ public class UserDaoJDBCImpl implements UserDao {
 
     }
 
-    public void createUsersTable() throws SQLException {
-        PreparedStatement preparedStatement = null;
-        String sql = "CREATE TABLE IF NOT EXISTS USER" +
-                "(id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), lastName VARCHAR(255), age INT)";
+    public void createUsersTable() {
         try {
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.executeUpdate();
+            connection.setAutoCommit(false);
+            PreparedStatement preparedStatement = null;
+            String sql = "CREATE TABLE IF NOT EXISTS USER" +
+                    "(id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), lastName VARCHAR(255), age TINYINT)";
+            try {
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                e.printStackTrace();
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
-//        } finally {
-//            if (preparedStatement != null) {
-//                preparedStatement.close();
-//            }
-//            if (connection != null) {
-//                connection.close();
-//            }
+            throw new RuntimeException(e);
         }
     }
 
-    public void dropUsersTable() throws SQLException {
-        PreparedStatement preparedStatement = null;
-        String sql = "DROP TABLE IF EXISTS USER";
+
+    public void dropUsersTable() {
         try {
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.executeUpdate();
+            connection.setAutoCommit(false);
+            try {
+                connection.setAutoCommit(false);
+                PreparedStatement preparedStatement = null;
+                String sql = "DROP TABLE IF EXISTS USER";
+                try {
+                    preparedStatement = connection.prepareStatement(sql);
+                    preparedStatement.executeUpdate();
+                    connection.commit();
+                } catch (SQLException e) {
+                    connection.rollback();
+                    e.printStackTrace();
+                }
+            } catch (SQLException e) {
+                connection.rollback();
+                throw new RuntimeException(e);
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
-    public void saveUser(String name, String lastName, byte age) throws SQLException {
-        PreparedStatement preparedStatement = null;
-        String sql = "INSERT INTO USER (name, lastName, age) VALUES (?, ?, ?)";
+    public void saveUser(String name, String lastName, byte age) {
         try {
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, name);
-            preparedStatement.setString(2, lastName);
-            preparedStatement.setByte(3, age);
+            connection.setAutoCommit(false);
 
-            preparedStatement.executeUpdate();
+            PreparedStatement preparedStatement = null;
+            String sql = "INSERT INTO USER (name, lastName, age) VALUES (?, ?, ?)";
+            try {
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setString(1, name);
+                preparedStatement.setString(2, lastName);
+                preparedStatement.setByte(3, age);
+
+                preparedStatement.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                e.printStackTrace();
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
+
 
     public void removeUserById(long id) {
-        PreparedStatement preparedStatement = null;
-        String sql = "DELETE FROM USER WHERE ID = ?";
         try {
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setLong(1, id);
-            preparedStatement.executeUpdate();
+            connection.setAutoCommit(false);
+            PreparedStatement preparedStatement = null;
+            String sql = "DELETE FROM USER WHERE ID = ?";
+            try {
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.setLong(1, id);
+
+                preparedStatement.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                e.printStackTrace();
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -94,12 +121,20 @@ public class UserDaoJDBCImpl implements UserDao {
         return userList;
     }
 
+
     public void cleanUsersTable() {
-        PreparedStatement preparedStatement = null;
-        String sql = "TRUNCATE TABLE USER";
         try {
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.executeUpdate();
+            connection.setAutoCommit(false);
+            PreparedStatement preparedStatement = null;
+            String sql = "TRUNCATE TABLE USER";
+            try {
+                preparedStatement = connection.prepareStatement(sql);
+                preparedStatement.executeUpdate();
+                connection.commit();
+            } catch (SQLException e) {
+                connection.rollback();
+                throw new RuntimeException(e);
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
