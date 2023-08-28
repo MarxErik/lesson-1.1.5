@@ -1,9 +1,6 @@
 package jm.task.core.jdbc.dao;
-
-import com.mysql.cj.util.Util;
 import jm.task.core.jdbc.model.User;
-
-import java.net.ConnectException;
+import javax.transaction.Transactional;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,27 +12,21 @@ public class UserDaoJDBCImpl implements UserDao {
     public UserDaoJDBCImpl() {
 
     }
-
-    public void createUsersTable() throws SQLException {
+    @Transactional
+    public void createUsersTable() {
         PreparedStatement preparedStatement = null;
         String sql = "CREATE TABLE IF NOT EXISTS USER" +
-                "(id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), lastName VARCHAR(255), age INT)";
+                "(id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(255), lastName VARCHAR(255), age TINYINT)";
         try {
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-//        } finally {
-//            if (preparedStatement != null) {
-//                preparedStatement.close();
-//            }
-//            if (connection != null) {
-//                connection.close();
-//            }
         }
     }
 
-    public void dropUsersTable() throws SQLException {
+    @Transactional
+    public void dropUsersTable() {
         PreparedStatement preparedStatement = null;
         String sql = "DROP TABLE IF EXISTS USER";
         try {
@@ -45,8 +36,8 @@ public class UserDaoJDBCImpl implements UserDao {
             e.printStackTrace();
         }
     }
-
-    public void saveUser(String name, String lastName, byte age) throws SQLException {
+    @Transactional
+    public void saveUser(String name, String lastName, byte age) {
         PreparedStatement preparedStatement = null;
         String sql = "INSERT INTO USER (name, lastName, age) VALUES (?, ?, ?)";
         try {
@@ -61,6 +52,7 @@ public class UserDaoJDBCImpl implements UserDao {
         }
     }
 
+    @Transactional
     public void removeUserById(long id) {
         PreparedStatement preparedStatement = null;
         String sql = "DELETE FROM USER WHERE ID = ?";
@@ -94,6 +86,7 @@ public class UserDaoJDBCImpl implements UserDao {
         return userList;
     }
 
+    @Transactional
     public void cleanUsersTable() {
         PreparedStatement preparedStatement = null;
         String sql = "TRUNCATE TABLE USER";
