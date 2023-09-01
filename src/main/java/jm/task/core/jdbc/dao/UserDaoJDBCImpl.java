@@ -101,7 +101,6 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public List<User> getAllUsers() {
-        Connection connection = getConection();
         List <User> userList = new ArrayList<>();
         String sql = "SELECT ID, NAME, LASTNAME, AGE FROM USER";
         try {
