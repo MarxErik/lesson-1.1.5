@@ -4,6 +4,8 @@ import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +21,10 @@ public class UserDaoHibernateImpl implements UserDao {
         Transaction transaction = null;
         try (Session session = Util.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.createSQLQuery("CREATE TABLE IF NOT EXISTS USER"
+            Query <User> query = session.createSQLQuery("CREATE TABLE IF NOT EXISTS USER"
                             + "(ID INTEGER NOT NULL AUTO_INCREMENT, NAME VARCHAR(255), LASTNAME VARCHAR(255), "
-                            + "AGE TINYINT, PRIMARY KEY (ID)) ")
-                    .executeUpdate();
+                            + "AGE TINYINT, PRIMARY KEY (ID)) ");
+            query.executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -35,8 +37,8 @@ public class UserDaoHibernateImpl implements UserDao {
         Transaction transaction = null;
         try (Session session = Util.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.createSQLQuery("DROP TABLE IF EXISTS USER")
-                    .executeUpdate();
+            Query <User> query = session.createSQLQuery("DROP TABLE IF EXISTS USER");
+            query.executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
@@ -75,7 +77,8 @@ public class UserDaoHibernateImpl implements UserDao {
     public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();
         try (Session session = Util.getSessionFactory().openSession()) {
-            userList = session.createQuery("FROM User").getResultList();
+            Query <User> query = session.createQuery("FROM User");
+            userList = query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -87,7 +90,8 @@ public class UserDaoHibernateImpl implements UserDao {
         Transaction transaction = null;
         try (Session session = Util.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            session.createQuery("DELETE FROM User").executeUpdate();
+            Query<User> query = session.createQuery("DELETE FROM User"); //executeUpdate();
+            query.executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             transaction.rollback();
