@@ -35,7 +35,7 @@ public class UserDaoHibernateImpl implements UserDao {
     public void createUsersTable() {
         try (Session session = Util.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            Query <User> query = session.createSQLQuery(SQL_CREATE_USERS_TABLE);
+            Query<User> query = session.createSQLQuery(SQL_CREATE_USERS_TABLE);
             query.executeUpdate();
             transaction.commit();
         } catch (Exception e) {
@@ -48,7 +48,7 @@ public class UserDaoHibernateImpl implements UserDao {
     public void dropUsersTable() {
         try (Session session = Util.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            Query <User> query = session.createSQLQuery(SQL_DROP_USERS_TABLE);
+            Query<User> query = session.createSQLQuery(SQL_DROP_USERS_TABLE);
             query.executeUpdate();
             transaction.commit();
         } catch (Exception e) {
@@ -87,7 +87,7 @@ public class UserDaoHibernateImpl implements UserDao {
         List<User> userList = new ArrayList<>();
         try (Session session = Util.getSessionFactory().openSession()) {
 
-            Query <User> query = session.createQuery(FROM_USER, User.class);
+            Query<User> query = session.createQuery(FROM_USER, User.class);
             userList = query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,5 +1,7 @@
 package jm.task.core.jdbc.dao;
+
 import jm.task.core.jdbc.model.User;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +10,7 @@ import static jm.task.core.jdbc.util.Util.getConection;
 
 public class UserDaoJDBCImpl implements UserDao {
     private static final Connection connection = getConection();
+
     public UserDaoJDBCImpl() {
 
     }
@@ -101,7 +104,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public List<User> getAllUsers() {
-        List <User> userList = new ArrayList<>();
+        List<User> userList = new ArrayList<>();
         String sql = "SELECT ID, NAME, LASTNAME, AGE FROM USER";
         try {
             Statement statement = connection.createStatement();
